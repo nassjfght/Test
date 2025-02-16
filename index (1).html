@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بكام - محول العملات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            font-family: Arial; 
+            padding: 20px;
+            background: #f0f4f8;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇱🇾 بكام</h1>
+            <h3>محول العملات الذكي</h3>
+        </div>
+
+        <input type="number" id="amount" placeholder="المبلغ (مثال: 1000)">
+        
+        <select id="fromCurrency">
+            <option value="USD">دولار أمريكي (USD)</option>
+            <option value="EGP">جنيه مصري (EGP)</option>
+            <option value="LYD">دينار ليبي (LYD)</option>
+            <option value="KWD">دينار كويتي (KWD)</option>
+        </select>
+
+        <select id="toCurrency">
+            <option value="EGP">جنيه مصري (EGP)</option>
+            <option value="USD">دولار أمريكي (USD)</option>
+            <option value="LYD">دينار ليبي (LYD)</option>
+            <option value="KWD">دينار كويتي (KWD)</option>
+        </select>
+
+        <button onclick="calculate()">احسب الآن</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // الأسعار المحدثة (تعدلها يدويًا)
+        const rates = {
+            "USD_EGP": { official: 50.6, black: 50.55 },
+            "EGP_USD": { official: 0.0198, black: 0.0197 },
+            "LYD_EGP": { official: 10.2, black: 15.8 },
+            "KWD_EGP": { official: 164.1, black: 164.5 }
+        };
+
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            
+            const key = `${from}_${to}`;
+            if (!rates[key]) {
+                document.getElementById('result').innerHTML = "⚠️ هذا الزوج غير مدعوم";
+                return;
+            }
+
+            const result = `
+                <h3>النتائج:</h3>
+                <p>الرسمي: ${(amount * rates[key].official).toFixed(2)} ${to}</p>
+                <p>السوق السوداء: ${(amount * rates[key].black).toFixed(2)} ${to}</p>
+                <p style="color: ${(rates[key].black > rates[key].official) ? 'green' : 'red'}">
+                    الفرق: ${((rates[key].black - rates[key].official) * amount} ${to}
+                </p>
+            `;
+
+            document.getElementById('result').innerHTML = result;
+        }
+    </script>
+</body>
+</html>
